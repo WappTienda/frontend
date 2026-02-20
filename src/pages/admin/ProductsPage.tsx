@@ -109,7 +109,7 @@ function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           </button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="sku">SKU *</Label>
               <Input
@@ -140,7 +140,7 @@ function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="price">Precio *</Label>
               <Input
