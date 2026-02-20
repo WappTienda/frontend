@@ -139,14 +139,19 @@ export interface LoginDto {
   password: string;
 }
 
+export type UserRole = "ADMIN";
+
+export interface User {
+  id: string;
+  email: string;
+  name: string | null;
+  role: UserRole;
+  isActive?: boolean;
+}
+
 export interface AuthResponse {
   accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  };
+  user: User;
 }
 
 export interface DashboardStats {
