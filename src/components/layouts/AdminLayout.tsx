@@ -5,7 +5,8 @@ import {
   ShoppingBag, 
   LogOut, 
   Menu, 
-  X 
+  X,
+  Settings,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
@@ -16,6 +17,7 @@ const navItems = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/admin/products', icon: Package, label: 'Productos' },
   { to: '/admin/orders', icon: ShoppingBag, label: 'Pedidos' },
+  { to: '/admin/settings', icon: Settings, label: 'Configuraciones' },
 ];
 
 export function AdminLayout() {
