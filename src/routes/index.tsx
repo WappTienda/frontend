@@ -13,6 +13,7 @@ import {
   ProductsPage,
   OrdersPage,
   OrderDetailPage,
+  SettingsPage,
 } from '@/pages/admin';
 
 // Root route
@@ -91,6 +92,12 @@ const adminOrderDetailRoute = createRoute({
   component: OrderDetailPage,
 });
 
+const adminSettingsRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: '/admin/settings',
+  component: SettingsPage,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
   publicLayoutRoute.addChildren([homeRoute, checkoutRoute, orderRoute]),
@@ -100,6 +107,7 @@ const routeTree = rootRoute.addChildren([
     adminProductsRoute,
     adminOrdersRoute,
     adminOrderDetailRoute,
+    adminSettingsRoute,
   ]),
 ]);
 
