@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Eye, ChevronDown } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { ordersAdminApi } from '@/api';
 import { Button, Card, Badge, LoadingSpinner, Select } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -107,20 +107,17 @@ export function OrdersPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Select
-                      options={statusOptions.slice(1)}
-                      value={order.status}
-                      onChange={(e) =>
-                        updateMutation.mutate({
-                          id: order.id,
-                          status: e.target.value as OrderStatus,
-                        })
-                      }
-                      className="w-36"
-                    />
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  <Select
+                    options={statusOptions.slice(1)}
+                    value={order.status}
+                    onChange={(e) =>
+                      updateMutation.mutate({
+                        id: order.id,
+                        status: e.target.value as OrderStatus,
+                      })
+                    }
+                    className="w-36"
+                  />
                   <Link to="/admin/orders/$orderId" params={{ orderId: order.id }}>
                     <Button variant="outline" size="sm">
                       <Eye className="h-4 w-4" />
