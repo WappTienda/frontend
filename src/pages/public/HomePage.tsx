@@ -29,7 +29,7 @@ function ProductCard({ product }: { product: Product }) {
       )}
       <div className="p-4">
         <h3 className="font-medium text-sm line-clamp-2 mb-1">{product.name}</h3>
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex flex-col items-start mb-3">
           <span className="font-bold text-primary">{formatCurrency(effectivePrice)}</span>
           {product.salePrice && (
             <span className="text-sm text-gray-400 line-through">
