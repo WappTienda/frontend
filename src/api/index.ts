@@ -14,6 +14,8 @@ import type {
   DashboardStats,
   OrderStats,
   TopProduct,
+  Setting,
+  UpdateSettingsDto,
 } from '@/types';
 
 // Auth
@@ -126,6 +128,17 @@ export const analyticsApi = {
 export const settingsApi = {
   getPublic: async (): Promise<Record<string, string>> => {
     const response = await api.get<Record<string, string>>('/settings/public');
+    return response.data;
+  },
+};
+
+export const settingsAdminApi = {
+  getAll: async (): Promise<Setting[]> => {
+    const response = await api.get<Setting[]>('/settings');
+    return response.data;
+  },
+  update: async (data: UpdateSettingsDto): Promise<Setting[]> => {
+    const response = await api.patch<Setting[]>('/settings', data);
     return response.data;
   },
 };

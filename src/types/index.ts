@@ -178,3 +178,21 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+export interface Setting {
+  id: string;
+  key: string;
+  value: string | null;
+  description: string | null;
+  isPublic: boolean;
+  updatedAt: string;
+}
+
+export interface UpdateSettingDto {
+  key: string;
+  value?: string;
+}
+
+export interface UpdateSettingsDto {
+  settings: UpdateSettingDto[];
+}
