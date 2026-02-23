@@ -5,32 +5,13 @@ import { Eye } from 'lucide-react';
 import { ordersAdminApi } from '@/api';
 import { Button, Card, Badge, LoadingSpinner, Select } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/lib/utils';
+import { statusLabels, statusVariants, statusOptions } from '@/lib/orderStatus';
 import type { OrderStatus } from '@/types';
 import { isOrderStatus } from '@/types';
 
-const statusLabels: Record<OrderStatus, string> = {
-  pending: 'Nuevo',
-  contacted: 'Contactado',
-  confirmed: 'Confirmado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled'> = {
-  pending: 'pending',
-  contacted: 'contacted',
-  confirmed: 'confirmed',
-  delivered: 'delivered',
-  cancelled: 'cancelled',
-};
-
-const statusOptions = [
+const statusFilterOptions = [
   { value: '', label: 'Todos los estados' },
-  { value: 'pending', label: 'Nuevo' },
-  { value: 'contacted', label: 'Contactado' },
-  { value: 'confirmed', label: 'Confirmado' },
-  { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' },
+  ...statusOptions,
 ];
 
 export function OrdersPage() {
@@ -64,7 +45,7 @@ export function OrdersPage() {
         <h1 className="text-2xl font-bold">Pedidos</h1>
         <div className="w-48">
           <Select
-            options={statusOptions}
+            options={statusFilterOptions}
             value={statusFilter}
             onChange={(e) => setStatusFilter(isOrderStatus(e.target.value) ? e.target.value : '')}
           />
@@ -109,7 +90,7 @@ export function OrdersPage() {
 
                 <div className="flex items-center gap-2">
                   <Select
-                    options={statusOptions.slice(1)}
+                    options={statusOptions}
                     value={order.status}
                     onChange={(e) => {
                       const status = e.target.value;

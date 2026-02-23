@@ -2,24 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { ordersPublicApi } from '@/api';
 import { Button, Card, Badge, LoadingSpinner } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import type { OrderStatus } from '@/types';
+import { statusLabels, statusVariants } from '@/lib/orderStatus';
 import { orderRoute } from '@/routes';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: 'Nuevo',
-  contacted: 'Contactado',
-  confirmed: 'Confirmado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled'> = {
-  pending: 'pending',
-  contacted: 'contacted',
-  confirmed: 'confirmed',
-  delivered: 'delivered',
-  cancelled: 'cancelled',
-};
 
 export function OrderPage() {
   const { publicId } = orderRoute.useParams();
