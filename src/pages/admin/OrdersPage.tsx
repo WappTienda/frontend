@@ -6,6 +6,7 @@ import { ordersAdminApi } from '@/api';
 import { Button, Card, Badge, LoadingSpinner, Select } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import type { OrderStatus } from '@/types';
+import { isOrderStatus } from '@/types';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: 'Nuevo',
@@ -65,7 +66,7 @@ export function OrdersPage() {
           <Select
             options={statusOptions}
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | '')}
+            onChange={(e) => setStatusFilter(isOrderStatus(e.target.value) ? e.target.value : '')}
           />
         </div>
       </div>
@@ -110,12 +111,12 @@ export function OrdersPage() {
                   <Select
                     options={statusOptions.slice(1)}
                     value={order.status}
-                    onChange={(e) =>
-                      updateMutation.mutate({
-                        id: order.id,
-                        status: e.target.value as OrderStatus,
-                      })
-                    }
+                    onChange={(e) => {
+                      const status = e.target.value;
+                      if (isOrderStatus(status)) {
+                        updateMutation.mutate({ id: order.id, status });
+                      }
+                    }}
                     className="w-36"
                   />
                   <Link to="/admin/orders/$orderId" params={{ orderId: order.id }}>

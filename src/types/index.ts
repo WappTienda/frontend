@@ -39,7 +39,13 @@ export interface OrderItem {
   subtotal: number;
 }
 
-export type OrderStatus = 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled';
+export const ORDER_STATUSES = ['pending', 'contacted', 'confirmed', 'delivered', 'cancelled'] as const;
+
+export type OrderStatus = typeof ORDER_STATUSES[number];
+
+export function isOrderStatus(value: unknown): value is OrderStatus {
+  return typeof value === 'string' && (ORDER_STATUSES as readonly string[]).includes(value);
+}
 
 export interface Customer {
   id: string;
