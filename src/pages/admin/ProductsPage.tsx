@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Pencil, Trash2, X, Eye, EyeOff, RotateCcw } from 'lucide-react';
-import { productsAdminApi } from '@/api';
+import { Plus, Pencil, Trash2, X, Eye, EyeOff, RotateCcw, Upload } from 'lucide-react';
+import { productsAdminApi, uploadsApi } from '@/api';
 import {
   Button,
   Input,
@@ -40,10 +40,14 @@ interface ProductFormProps {
 function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const queryClient = useQueryClient();
   const isEditing = !!product;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(product?.imageUrl || '');
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
@@ -63,6 +67,33 @@ function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           isActive: true,
         },
   });
+
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => uploadsApi.uploadImage(file),
+    onSuccess: (data) => {
+      setValue('imageUrl', data.url);
+      setPreviewUrl(data.url);
+      setUploadError(null);
+    },
+    onError: () => {
+      setUploadError('Error al subir la imagen');
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setUploadError('El archivo debe ser una imagen');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('La imagen no debe superar 5 MB');
+      return;
+    }
+    setUploadError(null);
+    uploadMutation.mutate(file);
+  };
 
   const createMutation = useMutation({
     mutationFn: (data: CreateProductDto) => productsAdminApi.create(data),
@@ -94,7 +125,7 @@ function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     }
   };
 
-  const isPending = createMutation.isPending || updateMutation.isPending;
+  const isPending = createMutation.isPending || updateMutation.isPending || uploadMutation.isPending;
   const error = createMutation.error || updateMutation.error;
 
   return (
@@ -167,12 +198,50 @@ function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           </div>
 
           <div>
-            <Label htmlFor="imageUrl">URL de imagen</Label>
-            <Input
-              id="imageUrl"
-              placeholder="https://..."
-              {...register('imageUrl')}
+            <Label>Imagen del producto</Label>
+            <input
+              ref={fileInputRef}
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              aria-label="Subir imagen del producto"
+              className="hidden"
+              onChange={handleFileChange}
             />
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
+              role="button"
+              tabIndex={0}
+              className="mt-1 flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
+              style={{ minHeight: '120px' }}
+            >
+              {uploadMutation.isPending ? (
+                <div className="flex flex-col items-center gap-2 p-4">
+                  <Spinner className="h-6 w-6" />
+                  <span className="text-sm text-muted-foreground">Subiendo imagen...</span>
+                </div>
+              ) : previewUrl ? (
+                <div className="relative p-2">
+                  <img
+                    src={previewUrl}
+                    alt="Vista previa"
+                    className="h-24 w-24 rounded-lg object-cover"
+                  />
+                  <span className="block text-xs text-muted-foreground text-center mt-1">
+                    Haz clic para cambiar
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2 p-4">
+                  <Upload className="h-8 w-8 text-gray-400" />
+                  <span className="text-sm text-muted-foreground">Haz clic para subir una imagen</span>
+                </div>
+              )}
+            </div>
+            {uploadError && (
+              <p className="text-sm text-red-500 mt-1">{uploadError}</p>
+            )}
           </div>
 
           <div className="flex items-center gap-6">

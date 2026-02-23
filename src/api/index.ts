@@ -144,3 +144,15 @@ export const settingsAdminApi = {
     return response.data;
   },
 };
+
+// Uploads
+export const uploadsApi = {
+  uploadImage: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post<{ url: string }>('/uploads/image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+};
