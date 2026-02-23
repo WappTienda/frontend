@@ -17,7 +17,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import type { OrderStatus } from '@/types';
 import { isOrderStatus } from '@/types';
-import { router } from '@/routes';
+import { adminOrderDetailRoute } from '@/routes';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: 'Nuevo',
@@ -44,8 +44,7 @@ const statusOptions = [
 ];
 
 export function OrderDetailPage() {
-  const params = router.state.matches.find(m => m.pathname.startsWith('/admin/orders/') && m.pathname !== '/admin/orders')?.params as { orderId?: string } | undefined;
-  const orderId = params?.orderId || '';
+  const { orderId } = adminOrderDetailRoute.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

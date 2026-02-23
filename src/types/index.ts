@@ -71,21 +71,25 @@ export interface Order {
   updatedAt: string;
 }
 
+export interface OrderSummaryItem {
+  name: string;
+  sku: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+}
+
 export interface OrderSummary {
-  id: string;
-  publicId: string;
+  orderId: string;
   status: OrderStatus;
-  totalAmount: number;
-  customerName: string;
-  customerPhone: string;
-  customerAddress: string | null;
-  customerNote: string | null;
-  items: {
+  customer: {
     name: string;
-    quantity: number;
-    unitPrice: number;
-    subtotal: number;
-  }[];
+    phone: string;
+    address: string | null;
+  } | null;
+  items: OrderSummaryItem[];
+  totalAmount: number;
+  customerNote: string | null;
   createdAt: string;
 }
 
@@ -104,12 +108,18 @@ export interface OrderQueryParams {
   search?: string;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
+export interface PaginationMeta {
   total: number;
   page: number;
   limit: number;
   totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
 }
 
 export interface CreateOrderDto {
