@@ -68,24 +68,22 @@ export function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Pedidos"
-          value={stats?.totalOrders || 0}
+          value={stats?.orders.total || 0}
           icon={ShoppingBag}
-          description={`${stats?.ordersToday || 0} hoy`}
         />
         <StatCard
           title="Ingresos Totales"
-          value={formatCurrency(stats?.totalRevenue || 0)}
+          value={formatCurrency(stats?.revenue.total || 0)}
           icon={DollarSign}
-          description={`${formatCurrency(stats?.revenueToday || 0)} hoy`}
         />
         <StatCard
           title="Pedidos Pendientes"
-          value={stats?.pendingOrders || 0}
+          value={stats?.orders.pending || 0}
           icon={Clock}
         />
         <StatCard
           title="Productos"
-          value={stats?.totalProducts || 0}
+          value={stats?.products.total || 0}
           icon={Package}
         />
       </div>
@@ -100,7 +98,7 @@ export function DashboardPage() {
             ) : (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={orderStats?.byDay || []}>
+                  <LineChart data={orderStats?.byDate || []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis
                       dataKey="date"

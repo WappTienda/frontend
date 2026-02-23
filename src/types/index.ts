@@ -186,17 +186,32 @@ export interface AuthResponse {
 }
 
 export interface DashboardStats {
-  totalOrders: number;
-  totalRevenue: number;
-  pendingOrders: number;
-  totalProducts: number;
-  ordersToday: number;
-  revenueToday: number;
+  orders: {
+    total: number;
+    pending: number;
+    confirmed: number;
+    delivered: number;
+    cancelled: number;
+  };
+  revenue: {
+    total: number;
+    today: number;
+    thisWeek: number;
+    thisMonth: number;
+  };
+  products: {
+    total: number;
+    visible: number;
+    outOfStock: number;
+  };
+  customers: {
+    total: number;
+  };
 }
 
 export interface OrderStats {
   byStatus: Record<OrderStatus, number>;
-  byDay: {
+  byDate: {
     date: string;
     count: number;
     revenue: number;
