@@ -16,6 +16,7 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import type { OrderStatus } from '@/types';
+import { isOrderStatus } from '@/types';
 import { router } from '@/routes';
 
 const statusLabels: Record<OrderStatus, string> = {
@@ -78,10 +79,14 @@ export function OrderDetailPage() {
   });
 
   const onSubmit = (data: { status: string; adminNote: string }) => {
-    updateMutation.mutate({
-      status: data.status as OrderStatus,
-      adminNote: data.adminNote,
-    });
+    if (isOrderStatus(data.status)) {
+      updateMutation.mutate({
+        status: data.status,
+        adminNote: data.adminNote,
+      });
+    } else {
+      console.error('Invalid order status:', data.status);
+    }
   };
 
   if (isLoading) return <LoadingSpinner />;
