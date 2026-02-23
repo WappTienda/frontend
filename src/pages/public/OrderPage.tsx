@@ -46,7 +46,7 @@ export function OrderPage() {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-6">
-        <h1 className="text-2xl font-bold mb-2">Pedido #{order.publicId}</h1>
+        <h1 className="text-2xl font-bold mb-2">Pedido #{order.orderId}</h1>
         <Badge variant={statusVariants[order.status]}>{statusLabels[order.status]}</Badge>
         <p className="text-sm text-gray-500 mt-2">{formatDate(order.createdAt)}</p>
       </div>
@@ -54,10 +54,14 @@ export function OrderPage() {
       <Card className="p-4 mb-4">
         <h3 className="font-semibold mb-3">Datos del cliente</h3>
         <div className="space-y-1 text-sm">
-          <p><span className="text-gray-500">Nombre:</span> {order.customerName}</p>
-          <p><span className="text-gray-500">Teléfono:</span> {order.customerPhone}</p>
-          {order.customerAddress && (
-            <p><span className="text-gray-500">Dirección:</span> {order.customerAddress}</p>
+          {order.customer && (
+            <>
+              <p><span className="text-gray-500">Nombre:</span> {order.customer.name}</p>
+              <p><span className="text-gray-500">Teléfono:</span> {order.customer.phone}</p>
+              {order.customer.address && (
+                <p><span className="text-gray-500">Dirección:</span> {order.customer.address}</p>
+              )}
+            </>
           )}
           {order.customerNote && (
             <p><span className="text-gray-500">Nota:</span> {order.customerNote}</p>

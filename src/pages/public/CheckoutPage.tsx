@@ -111,7 +111,7 @@ function OrderConfirmation({ order, whatsappLink }: OrderConfirmationProps) {
         </div>
         <h2 className="text-2xl font-bold mb-2">¡Pedido creado!</h2>
         <p className="text-gray-600">
-          Tu pedido #{order.publicId} ha sido registrado correctamente.
+          Tu pedido #{order.orderId} ha sido registrado correctamente.
         </p>
       </div>
 
@@ -144,7 +144,7 @@ function OrderConfirmation({ order, whatsappLink }: OrderConfirmationProps) {
         </a>
       )}
 
-      <a href={`/order/${order.publicId}`}>
+      <a href={`/order/${order.orderId}`}>
         <Button variant="outline" className="w-full">
           Ver detalle del pedido
         </Button>
