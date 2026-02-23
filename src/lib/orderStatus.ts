@@ -8,6 +8,14 @@ export const statusLabels: Record<OrderStatus, string> = {
   cancelled: 'Cancelado',
 };
 
+export const statusPluralLabels: Record<OrderStatus, string> = {
+  pending: 'Nuevos',
+  contacted: 'Contactados',
+  confirmed: 'Confirmados',
+  delivered: 'Entregados',
+  cancelled: 'Cancelados',
+};
+
 export const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled'> = {
   pending: 'pending',
   contacted: 'contacted',
