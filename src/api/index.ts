@@ -16,6 +16,8 @@ import type {
   TopProduct,
   Setting,
   UpdateSettingsDto,
+  ProductQueryParams,
+  OrderQueryParams,
 } from '@/types';
 
 // Auth
@@ -28,7 +30,7 @@ export const authApi = {
 
 // Products (Public)
 export const productsApi = {
-  getAll: async (params?: { page?: number; limit?: number; categoryId?: string }): Promise<PaginatedResponse<Product>> => {
+  getAll: async (params?: ProductQueryParams): Promise<PaginatedResponse<Product>> => {
     const response = await api.get<PaginatedResponse<Product>>('/products', { params });
     return response.data;
   },
@@ -40,7 +42,7 @@ export const productsApi = {
 
 // Products (Admin)
 export const productsAdminApi = {
-  getAll: async (params?: { page?: number; limit?: number }): Promise<PaginatedResponse<Product>> => {
+  getAll: async (params?: ProductQueryParams): Promise<PaginatedResponse<Product>> => {
     const response = await api.get<PaginatedResponse<Product>>('/products/admin', { params });
     return response.data;
   },
@@ -91,7 +93,7 @@ export const ordersPublicApi = {
 
 // Orders (Admin)
 export const ordersAdminApi = {
-  getAll: async (params?: { page?: number; limit?: number; status?: string }): Promise<PaginatedResponse<Order>> => {
+  getAll: async (params?: OrderQueryParams): Promise<PaginatedResponse<Order>> => {
     const response = await api.get<PaginatedResponse<Order>>('/orders', { params });
     return response.data;
   },

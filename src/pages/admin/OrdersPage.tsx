@@ -33,7 +33,7 @@ const statusOptions = [
 ];
 
 export function OrdersPage() {
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -65,7 +65,7 @@ export function OrdersPage() {
           <Select
             options={statusOptions}
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | '')}
           />
         </div>
       </div>

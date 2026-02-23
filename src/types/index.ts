@@ -83,6 +83,21 @@ export interface OrderSummary {
   createdAt: string;
 }
 
+export interface ProductQueryParams {
+  page?: number;
+  limit?: number;
+  categoryId?: string;
+  search?: string;
+  onlyInStock?: boolean;
+}
+
+export interface OrderQueryParams {
+  page?: number;
+  limit?: number;
+  status?: OrderStatus;
+  search?: string;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
