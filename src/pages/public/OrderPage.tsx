@@ -3,7 +3,7 @@ import { ordersPublicApi } from '@/api';
 import { Button, Card, Badge, LoadingSpinner } from '@/components/ui';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import type { OrderStatus } from '@/types';
-import { router } from '@/routes';
+import { orderRoute } from '@/routes';
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: 'Nuevo',
@@ -22,8 +22,7 @@ const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' 
 };
 
 export function OrderPage() {
-  const params = router.state.matches.find(m => m.pathname.startsWith('/order/'))?.params as { publicId?: string } | undefined;
-  const publicId = params?.publicId || '';
+  const { publicId } = orderRoute.useParams();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['order', publicId],
