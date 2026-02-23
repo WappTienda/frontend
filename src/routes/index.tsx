@@ -113,6 +113,7 @@ const routeTree = rootRoute.addChildren([
 
 // Create router
 export const router = createRouter({ routeTree });
+export { orderRoute, adminOrderDetailRoute };
 
 // Register router for type safety
 declare module '@tanstack/react-router' {
