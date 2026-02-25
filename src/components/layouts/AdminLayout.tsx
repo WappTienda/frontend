@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { Button } from '@/components/ui';
+import { Button, ConfirmDialog } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -22,6 +22,7 @@ const navItems = [
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const routerState = useRouterState();
@@ -86,7 +87,7 @@ export function AdminLayout() {
           <Button
             variant="outline"
             className="w-full justify-start gap-2"
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
           >
             <LogOut className="h-4 w-4" />
             Cerrar sesión
@@ -108,6 +109,16 @@ export function AdminLayout() {
           <Outlet />
         </main>
       </div>
+
+      {showLogoutConfirm && (
+        <ConfirmDialog
+          title="Cerrar sesión"
+          message="¿Estás seguro de que deseas cerrar sesión?"
+          confirmLabel="Cerrar sesión"
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogoutConfirm(false)}
+        />
+      )}
     </div>
   );
 }
