@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
-import { Button, ConfirmDialog } from '@/components/ui';
+import { Button, ConfirmDialog, ToastContainer } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -119,6 +119,7 @@ export function AdminLayout() {
           onCancel={() => setShowLogoutConfirm(false)}
         />
       )}
+      <ToastContainer />
     </div>
   );
 }
