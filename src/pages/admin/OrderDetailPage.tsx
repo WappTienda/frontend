@@ -14,34 +14,13 @@ import {
   LoadingSpinner,
 } from '@/components/ui';
 import { Spinner } from '@/components/ui/spinner';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
+import { statusLabels, statusVariants, statusOptions } from '@/lib/orderStatus';
+import { CustomerInfoCard } from '@/components/orders/CustomerInfoCard';
+import { OrderItemsCard } from '@/components/orders/OrderItemsCard';
 import type { OrderStatus } from '@/types';
 import { isOrderStatus } from '@/types';
 import { adminOrderDetailRoute } from '@/routes';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: 'Nuevo',
-  contacted: 'Contactado',
-  confirmed: 'Confirmado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled'> = {
-  pending: 'pending',
-  contacted: 'contacted',
-  confirmed: 'confirmed',
-  delivered: 'delivered',
-  cancelled: 'cancelled',
-};
-
-const statusOptions = [
-  { value: 'pending', label: 'Nuevo' },
-  { value: 'contacted', label: 'Contactado' },
-  { value: 'confirmed', label: 'Confirmado' },
-  { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' },
-];
 
 export function OrderDetailPage() {
   const { orderId } = adminOrderDetailRoute.useParams();
@@ -129,62 +108,8 @@ export function OrderDetailPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Customer Info */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Datos del cliente</h2>
-            <div className="space-y-2 text-sm">
-              <p>
-                <span className="text-muted-foreground">Nombre:</span>{' '}
-                {order.customer?.name}
-              </p>
-              <p>
-                <span className="text-muted-foreground">Teléfono:</span>{' '}
-                <a
-                  href={`https://wa.me/${order.customer?.phone?.replace(/[^0-9]/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {order.customer?.phone}
-                </a>
-              </p>
-              {order.customer?.address && (
-                <p>
-                  <span className="text-muted-foreground">Dirección:</span>{' '}
-                  {order.customer.address}
-                </p>
-              )}
-              {order.customerNote && (
-                <div className="pt-2 border-t mt-2">
-                  <span className="text-muted-foreground">Nota del cliente:</span>
-                  <p className="mt-1">{order.customerNote}</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Order Items */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Productos</h2>
-            <div className="space-y-3">
-              {order.items?.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span>
-                    {item.quantity}x {item.productName}
-                  </span>
-                  <span>{formatCurrency(item.subtotal)}</span>
-                </div>
-              ))}
-              <div className="flex justify-between font-bold pt-3 border-t">
-                <span>Total</span>
-                <span className="text-primary">{formatCurrency(order.totalAmount)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <CustomerInfoCard customer={order.customer} customerNote={order.customerNote} />
+        <OrderItemsCard items={order.items} totalAmount={order.totalAmount} />
       </div>
 
       {/* Admin Actions */}
