@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
@@ -12,6 +13,7 @@ import {
   Textarea,
   Label,
   LoadingSpinner,
+  ConfirmDialog,
 } from '@/components/ui';
 import { Spinner } from '@/components/ui/spinner';
 import { formatDate } from '@/lib/utils';
@@ -26,6 +28,7 @@ export function OrderDetailPage() {
   const { orderId } = adminOrderDetailRoute.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { data: order, isLoading, error } = useQuery({
     queryKey: ['admin-order', orderId],
@@ -136,11 +139,7 @@ export function OrderDetailPage() {
               <Button
                 type="button"
                 variant="destructive"
-                onClick={() => {
-                  if (confirm('¿Eliminar este pedido? Esta acción no se puede deshacer.')) {
-                    deleteMutation.mutate();
-                  }
-                }}
+                onClick={() => setShowDeleteConfirm(true)}
                 disabled={deleteMutation.isPending}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -150,6 +149,19 @@ export function OrderDetailPage() {
           </form>
         </CardContent>
       </Card>
+
+      {showDeleteConfirm && (
+        <ConfirmDialog
+          title="Eliminar pedido"
+          message="¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer."
+          confirmLabel="Eliminar"
+          onConfirm={() => {
+            setShowDeleteConfirm(false);
+            deleteMutation.mutate();
+          }}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
+      )}
     </div>
   );
 }

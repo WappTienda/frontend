@@ -7,6 +7,7 @@ import {
   Card,
   Badge,
   LoadingSpinner,
+  ConfirmDialog,
 } from '@/components/ui';
 import { formatCurrency } from '@/lib/utils';
 import { ProductForm } from '@/components/products/ProductForm';
@@ -15,6 +16,7 @@ import type { Product } from '@/types';
 export function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
@@ -132,11 +134,7 @@ export function ProductsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => {
-                          if (confirm('¿Eliminar este producto?')) {
-                            deleteMutation.mutate(product.id);
-                          }
-                        }}
+                        onClick={() => setConfirmDeleteId(product.id)}
                         disabled={deleteMutation.isPending}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -155,6 +153,19 @@ export function ProductsPage() {
           product={editingProduct}
           onClose={handleCloseForm}
           onSuccess={handleCloseForm}
+        />
+      )}
+
+      {confirmDeleteId && (
+        <ConfirmDialog
+          title="Eliminar producto"
+          message="¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer."
+          confirmLabel="Eliminar"
+          onConfirm={() => {
+            deleteMutation.mutate(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+          onCancel={() => setConfirmDeleteId(null)}
         />
       )}
     </div>
