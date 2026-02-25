@@ -6,7 +6,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { PublicLayout, AdminLayout } from '@/components/layouts';
-import { HomePage, CheckoutPage, OrderPage } from '@/pages/public';
+import { HomePage, CheckoutPage, OrderPage, NotFoundPage } from '@/pages/public';
 import {
   LoginPage,
   DashboardPage,
@@ -98,6 +98,13 @@ const adminSettingsRoute = createRoute({
   component: SettingsPage,
 });
 
+// Catch-all 404 route
+const notFoundRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '$',
+  component: NotFoundPage,
+});
+
 // Route tree
 const routeTree = rootRoute.addChildren([
   publicLayoutRoute.addChildren([homeRoute, checkoutRoute, orderRoute]),
@@ -109,6 +116,7 @@ const routeTree = rootRoute.addChildren([
     adminOrderDetailRoute,
     adminSettingsRoute,
   ]),
+  notFoundRoute,
 ]);
 
 // Create router
