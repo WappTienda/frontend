@@ -101,7 +101,7 @@ const adminSettingsRoute = createRoute({
 // Catch-all 404 route
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '*',
+  path: '$',
   component: NotFoundPage,
 });
 
