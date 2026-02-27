@@ -1,36 +1,46 @@
-import { Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingBag, 
-  LogOut, 
-  Menu, 
+import {
+  Link,
+  Outlet,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingBag,
+  LogOut,
+  Menu,
   X,
   Settings,
-} from 'lucide-react';
-import { useState } from 'react';
-import { useAuthStore } from '@/stores/authStore';
-import { Button, ConfirmDialog, ToastContainer } from '@/components/ui';
-import { cn } from '@/lib/utils';
+} from "lucide-react";
+import { useState } from "react";
+import { useAuthStore } from "@/stores/authStore";
+import { useConfirmStore } from "@/stores/confirmStore";
+import {
+  Button,
+  ConfirmDialogContainer,
+  ToastContainer,
+} from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/admin/products', icon: Package, label: 'Productos' },
-  { to: '/admin/orders', icon: ShoppingBag, label: 'Pedidos' },
-  { to: '/admin/settings', icon: Settings, label: 'Configuraciones' },
+  { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/admin/products", icon: Package, label: "Productos" },
+  { to: "/admin/orders", icon: ShoppingBag, label: "Pedidos" },
+  { to: "/admin/settings", icon: Settings, label: "Configuraciones" },
 ];
 
 export function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, logout } = useAuthStore();
+  const confirm = useConfirmStore((s) => s.confirm);
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
   const handleLogout = () => {
     logout();
-    navigate({ to: '/admin/login' });
+    navigate({ to: "/admin/login" });
   };
 
   return (
@@ -46,8 +56,8 @@ export function AdminLayout() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-64 transform bg-white border-r transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0',
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          "fixed inset-y-0 left-0 z-50 w-64 transform bg-white border-r transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex h-14 items-center justify-between border-b px-4">
@@ -67,10 +77,10 @@ export function AdminLayout() {
               key={item.to}
               to={item.to}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 currentPath === item.to
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? "bg-primary/10 text-primary"
+                  : "text-gray-600 hover:bg-gray-100",
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -87,7 +97,14 @@ export function AdminLayout() {
           <Button
             variant="outline"
             className="w-full justify-start gap-2"
-            onClick={() => setShowLogoutConfirm(true)}
+            onClick={() =>
+              confirm({
+                title: "Cerrar sesión",
+                message: "¿Estás seguro de que deseas cerrar sesión?",
+                confirmLabel: "Cerrar sesión",
+                onConfirm: handleLogout,
+              })
+            }
           >
             <LogOut className="h-4 w-4" />
             Cerrar sesión
@@ -102,7 +119,7 @@ export function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <h1 className="text-lg font-semibold">
-            {navItems.find((item) => item.to === currentPath)?.label || 'Admin'}
+            {navItems.find((item) => item.to === currentPath)?.label || "Admin"}
           </h1>
         </header>
         <main className="flex-1 p-4 lg:p-6">
@@ -110,15 +127,7 @@ export function AdminLayout() {
         </main>
       </div>
 
-      {showLogoutConfirm && (
-        <ConfirmDialog
-          title="Cerrar sesión"
-          message="¿Estás seguro de que deseas cerrar sesión?"
-          confirmLabel="Cerrar sesión"
-          onConfirm={handleLogout}
-          onCancel={() => setShowLogoutConfirm(false)}
-        />
-      )}
+      <ConfirmDialogContainer />
       <ToastContainer />
     </div>
   );
