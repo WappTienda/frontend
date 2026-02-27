@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import { Store, MessageCircle, Settings } from 'lucide-react';
 import { settingsAdminApi } from '@/api';
 import {
@@ -8,10 +7,11 @@ import {
 } from '@/components/ui';
 import { SettingsSection } from '@/components/settings/SettingsSection';
 import { groupSettings } from '@/lib/settingsUtils';
+import { useNotificationStore } from '@/stores/notificationStore';
 
 export function SettingsPage() {
   const queryClient = useQueryClient();
-  const [successSection, setSuccessSection] = useState<string | null>(null);
+  const { success, error } = useNotificationStore();
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['admin-settings'],
@@ -25,19 +25,16 @@ export function SettingsPage() {
     },
   });
 
-  const handleSave = (section: string) => (data: Record<string, string | undefined>) => {
+  const handleSave = () => (data: Record<string, string | undefined>) => {
     const updates = Object.entries(data).map(([key, value]) => ({
       key,
       value: value ?? '',
     }));
-    setSuccessSection(null);
     mutation.mutate(
       { settings: updates },
       {
-        onSuccess: () => {
-          setSuccessSection(section);
-          setTimeout(() => setSuccessSection(null), 3000);
-        },
+        onSuccess: () => success('Configuración guardada correctamente.'),
+        onError: () => error('Error al guardar la configuración. Inténtelo de nuevo.'),
       }
     );
   };
@@ -61,28 +58,22 @@ export function SettingsPage() {
           title="Configuraciones Generales"
           icon={Store}
           settings={general}
-          onSave={handleSave('general')}
+          onSave={handleSave()}
           isPending={mutation.isPending}
-          isError={mutation.isError && successSection === null}
-          isSuccess={successSection === 'general'}
         />
         <SettingsSection
           title="Configuraciones de WhatsApp"
           icon={MessageCircle}
           settings={whatsapp}
-          onSave={handleSave('whatsapp')}
+          onSave={handleSave()}
           isPending={mutation.isPending}
-          isError={mutation.isError && successSection === null}
-          isSuccess={successSection === 'whatsapp'}
         />
         <SettingsSection
           title="Configuraciones del Sistema"
           icon={Settings}
           settings={system}
-          onSave={handleSave('system')}
+          onSave={handleSave()}
           isPending={mutation.isPending}
-          isError={mutation.isError && successSection === null}
-          isSuccess={successSection === 'system'}
         />
 
         {allSettings.length === 0 && (

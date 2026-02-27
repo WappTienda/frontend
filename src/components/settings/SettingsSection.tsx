@@ -21,8 +21,6 @@ interface SettingsSectionProps {
   settings: Setting[];
   onSave: (data: SettingsFormData) => void;
   isPending: boolean;
-  isError: boolean;
-  isSuccess: boolean;
 }
 
 export function SettingsSection({
@@ -31,8 +29,6 @@ export function SettingsSection({
   settings,
   onSave,
   isPending,
-  isError,
-  isSuccess,
 }: SettingsSectionProps) {
   const defaultValues = useMemo(() => {
     const values: SettingsFormData = {};
@@ -73,18 +69,6 @@ export function SettingsSection({
             />
           </div>
         ))}
-
-        {isError && (
-          <div className="text-sm text-red-500 p-3 bg-red-50 rounded-lg">
-            Error al guardar la configuración. Inténtelo de nuevo.
-          </div>
-        )}
-
-        {isSuccess && (
-          <div className="text-sm text-green-600 p-3 bg-green-50 rounded-lg">
-            Configuración guardada correctamente.
-          </div>
-        )}
 
         <div className="flex justify-end pt-2">
           <Button type="submit" disabled={isPending} className="gap-2">
