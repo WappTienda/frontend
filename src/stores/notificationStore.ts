@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
+export type ToastType = "success" | "error" | "warning" | "info";
 
 export interface Toast {
   id: string;
@@ -32,21 +32,29 @@ export const useNotificationStore = create<NotificationState>((set) => ({
 
   success: (message) => {
     const id = crypto.randomUUID();
-    set((state) => ({ toasts: [...state.toasts, { id, type: 'success', message }] }));
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: "success", message }],
+    }));
   },
 
   error: (message) => {
     const id = crypto.randomUUID();
-    set((state) => ({ toasts: [...state.toasts, { id, type: 'error', message }] }));
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: "error", message }],
+    }));
   },
 
   warning: (message) => {
     const id = crypto.randomUUID();
-    set((state) => ({ toasts: [...state.toasts, { id, type: 'warning', message }] }));
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: "warning", message }],
+    }));
   },
 
   info: (message) => {
     const id = crypto.randomUUID();
-    set((state) => ({ toasts: [...state.toasts, { id, type: 'info', message }] }));
+    set((state) => ({
+      toasts: [...state.toasts, { id, type: "info", message }],
+    }));
   },
 }));

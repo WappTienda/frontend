@@ -1,40 +1,35 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Eye, EyeOff, RotateCcw } from 'lucide-react';
-import { productsAdminApi } from '@/api';
-import {
-  Button,
-  Card,
-  Badge,
-  LoadingSpinner,
-  ConfirmDialog,
-} from '@/components/ui';
-import { formatCurrency } from '@/lib/utils';
-import { ProductForm } from '@/components/products/ProductForm';
-import type { Product } from '@/types';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Pencil, Trash2, Eye, EyeOff, RotateCcw } from "lucide-react";
+import { productsAdminApi } from "@/api";
+import { Button, Card, Badge, LoadingSpinner } from "@/components/ui";
+import { useConfirmStore } from "@/stores/confirmStore";
+import { formatCurrency } from "@/lib/utils";
+import { ProductForm } from "@/components/products/ProductForm";
+import type { Product } from "@/types";
 
 export function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const confirm = useConfirmStore((s) => s.confirm);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-products'],
+    queryKey: ["admin-products"],
     queryFn: () => productsAdminApi.getAll({ limit: 100 }),
   });
 
   const deleteMutation = useMutation({
     mutationFn: productsAdminApi.delete,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
     },
   });
 
   const restoreMutation = useMutation({
     mutationFn: productsAdminApi.restore,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
     },
   });
 
@@ -65,7 +60,9 @@ export function ProductsPage() {
       {products.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="text-muted-foreground mb-4">No hay productos</p>
-          <Button onClick={() => setShowForm(true)}>Crear primer producto</Button>
+          <Button onClick={() => setShowForm(true)}>
+            Crear primer producto
+          </Button>
         </Card>
       ) : (
         <div className="grid gap-4">
@@ -86,7 +83,9 @@ export function ProductsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-medium truncate">{product.name}</h3>
-                    <span className="text-sm text-muted-foreground">({product.sku})</span>
+                    <span className="text-sm text-muted-foreground">
+                      ({product.sku})
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-primary">
@@ -103,11 +102,19 @@ export function ProductsPage() {
                       <Badge variant="destructive">Eliminado</Badge>
                     ) : (
                       <>
-                        <Badge variant={product.isVisible ? 'default' : 'secondary'}>
-                          {product.isVisible ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
-                          {product.isVisible ? 'Visible' : 'Oculto'}
+                        <Badge
+                          variant={product.isVisible ? "default" : "secondary"}
+                        >
+                          {product.isVisible ? (
+                            <Eye className="h-3 w-3 mr-1" />
+                          ) : (
+                            <EyeOff className="h-3 w-3 mr-1" />
+                          )}
+                          {product.isVisible ? "Visible" : "Oculto"}
                         </Badge>
-                        {!product.isActive && <Badge variant="secondary">Inactivo</Badge>}
+                        {!product.isActive && (
+                          <Badge variant="secondary">Inactivo</Badge>
+                        )}
                       </>
                     )}
                   </div>
@@ -134,7 +141,15 @@ export function ProductsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setConfirmDeleteId(product.id)}
+                        onClick={() =>
+                          confirm({
+                            title: "Eliminar producto",
+                            message:
+                              "¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.",
+                            confirmLabel: "Eliminar",
+                            onConfirm: () => deleteMutation.mutate(product.id),
+                          })
+                        }
                         disabled={deleteMutation.isPending}
                       >
                         <Trash2 className="h-4 w-4" />
@@ -153,19 +168,6 @@ export function ProductsPage() {
           product={editingProduct}
           onClose={handleCloseForm}
           onSuccess={handleCloseForm}
-        />
-      )}
-
-      {confirmDeleteId && (
-        <ConfirmDialog
-          title="Eliminar producto"
-          message="¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer."
-          confirmLabel="Eliminar"
-          onConfirm={() => {
-            deleteMutation.mutate(confirmDeleteId);
-            setConfirmDeleteId(null);
-          }}
-          onCancel={() => setConfirmDeleteId(null)}
         />
       )}
     </div>
