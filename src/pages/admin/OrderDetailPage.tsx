@@ -1,8 +1,8 @@
-import { useNavigate } from '@tanstack/react-router';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import { ArrowLeft, ExternalLink, Trash2 } from 'lucide-react';
-import { ordersAdminApi } from '@/api';
+import { useNavigate } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { ArrowLeft, ExternalLink, Trash2 } from "lucide-react";
+import { ordersAdminApi } from "@/api";
 import {
   Button,
   Card,
@@ -12,52 +12,37 @@ import {
   Textarea,
   Label,
   LoadingSpinner,
-} from '@/components/ui';
-import { Spinner } from '@/components/ui/spinner';
-import { formatCurrency, formatDate } from '@/lib/utils';
-import type { OrderStatus } from '@/types';
-import { isOrderStatus } from '@/types';
-import { adminOrderDetailRoute } from '@/routes';
-
-const statusLabels: Record<OrderStatus, string> = {
-  pending: 'Nuevo',
-  contacted: 'Contactado',
-  confirmed: 'Confirmado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado',
-};
-
-const statusVariants: Record<OrderStatus, 'pending' | 'contacted' | 'confirmed' | 'delivered' | 'cancelled'> = {
-  pending: 'pending',
-  contacted: 'contacted',
-  confirmed: 'confirmed',
-  delivered: 'delivered',
-  cancelled: 'cancelled',
-};
-
-const statusOptions = [
-  { value: 'pending', label: 'Nuevo' },
-  { value: 'contacted', label: 'Contactado' },
-  { value: 'confirmed', label: 'Confirmado' },
-  { value: 'delivered', label: 'Entregado' },
-  { value: 'cancelled', label: 'Cancelado' },
-];
+} from "@/components/ui";
+import { useConfirmStore } from "@/stores/confirmStore";
+import { Spinner } from "@/components/ui/spinner";
+import { formatDate } from "@/lib/utils";
+import { statusLabels, statusVariants, statusOptions } from "@/lib/orderStatus";
+import { CustomerInfoCard } from "@/components/orders/CustomerInfoCard";
+import { OrderItemsCard } from "@/components/orders/OrderItemsCard";
+import type { OrderStatus } from "@/types";
+import { isOrderStatus } from "@/types";
+import { adminOrderDetailRoute } from "@/routes";
 
 export function OrderDetailPage() {
   const { orderId } = adminOrderDetailRoute.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const confirm = useConfirmStore((s) => s.confirm);
 
-  const { data: order, isLoading, error } = useQuery({
-    queryKey: ['admin-order', orderId],
+  const {
+    data: order,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["admin-order", orderId],
     queryFn: () => ordersAdminApi.getById(orderId),
     enabled: !!orderId,
   });
 
   const { register, handleSubmit } = useForm({
     values: {
-      status: order?.status || 'pending',
-      adminNote: order?.adminNote || '',
+      status: order?.status || "pending",
+      adminNote: order?.adminNote || "",
     },
   });
 
@@ -65,15 +50,15 @@ export function OrderDetailPage() {
     mutationFn: (data: { status?: OrderStatus; adminNote?: string }) =>
       ordersAdminApi.update(orderId, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-order', orderId] });
-      queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      queryClient.invalidateQueries({ queryKey: ["admin-order", orderId] });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: () => ordersAdminApi.delete(orderId),
     onSuccess: () => {
-      navigate({ to: '/admin/orders' });
+      navigate({ to: "/admin/orders" });
     },
   });
 
@@ -84,7 +69,7 @@ export function OrderDetailPage() {
         adminNote: data.adminNote,
       });
     } else {
-      console.error('Invalid order status:', data.status);
+      console.error("Invalid order status:", data.status);
     }
   };
 
@@ -93,7 +78,11 @@ export function OrderDetailPage() {
     return (
       <div className="text-center py-12">
         <p className="text-muted-foreground">Pedido no encontrado</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate({ to: '/admin/orders' })}>
+        <Button
+          variant="outline"
+          className="mt-4"
+          onClick={() => navigate({ to: "/admin/orders" })}
+        >
           Volver a pedidos
         </Button>
       </div>
@@ -104,7 +93,7 @@ export function OrderDetailPage() {
     <div className="max-w-4xl">
       <div className="flex items-center gap-4 mb-6">
         <button
-          onClick={() => navigate({ to: '/admin/orders' })}
+          onClick={() => navigate({ to: "/admin/orders" })}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -113,9 +102,13 @@ export function OrderDetailPage() {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">Pedido #{order.publicId}</h1>
-            <Badge variant={statusVariants[order.status]}>{statusLabels[order.status]}</Badge>
+            <Badge variant={statusVariants[order.status]}>
+              {statusLabels[order.status]}
+            </Badge>
           </div>
-          <p className="text-sm text-muted-foreground">{formatDate(order.createdAt)}</p>
+          <p className="text-sm text-muted-foreground">
+            {formatDate(order.createdAt)}
+          </p>
         </div>
         <a
           href={`/order/${order.publicId}`}
@@ -129,62 +122,11 @@ export function OrderDetailPage() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Customer Info */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Datos del cliente</h2>
-            <div className="space-y-2 text-sm">
-              <p>
-                <span className="text-muted-foreground">Nombre:</span>{' '}
-                {order.customer?.name}
-              </p>
-              <p>
-                <span className="text-muted-foreground">Teléfono:</span>{' '}
-                <a
-                  href={`https://wa.me/${order.customer?.phone?.replace(/[^0-9]/g, '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {order.customer?.phone}
-                </a>
-              </p>
-              {order.customer?.address && (
-                <p>
-                  <span className="text-muted-foreground">Dirección:</span>{' '}
-                  {order.customer.address}
-                </p>
-              )}
-              {order.customerNote && (
-                <div className="pt-2 border-t mt-2">
-                  <span className="text-muted-foreground">Nota del cliente:</span>
-                  <p className="mt-1">{order.customerNote}</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Order Items */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="font-semibold mb-4">Productos</h2>
-            <div className="space-y-3">
-              {order.items?.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span>
-                    {item.quantity}x {item.productName}
-                  </span>
-                  <span>{formatCurrency(item.subtotal)}</span>
-                </div>
-              ))}
-              <div className="flex justify-between font-bold pt-3 border-t">
-                <span>Total</span>
-                <span className="text-primary">{formatCurrency(order.totalAmount)}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <CustomerInfoCard
+          customer={order.customer}
+          customerNote={order.customerNote}
+        />
+        <OrderItemsCard items={order.items} totalAmount={order.totalAmount} />
       </div>
 
       {/* Admin Actions */}
@@ -194,28 +136,40 @@ export function OrderDetailPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Label>Estado</Label>
-              <Select options={statusOptions} {...register('status')} className="mt-1" />
+              <Select
+                options={statusOptions}
+                {...register("status")}
+                className="mt-1"
+              />
             </div>
             <div>
               <Label>Nota interna (solo admin)</Label>
               <Textarea
-                {...register('adminNote')}
+                {...register("adminNote")}
                 placeholder="Notas internas sobre este pedido..."
                 className="mt-1"
               />
             </div>
             <div className="flex gap-3">
               <Button type="submit" disabled={updateMutation.isPending}>
-                {updateMutation.isPending ? <Spinner className="h-4 w-4" /> : 'Guardar cambios'}
+                {updateMutation.isPending ? (
+                  <Spinner className="h-4 w-4" />
+                ) : (
+                  "Guardar cambios"
+                )}
               </Button>
               <Button
                 type="button"
                 variant="destructive"
-                onClick={() => {
-                  if (confirm('¿Eliminar este pedido? Esta acción no se puede deshacer.')) {
-                    deleteMutation.mutate();
-                  }
-                }}
+                onClick={() =>
+                  confirm({
+                    title: "Eliminar pedido",
+                    message:
+                      "¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer.",
+                    confirmLabel: "Eliminar",
+                    onConfirm: () => deleteMutation.mutate(),
+                  })
+                }
                 disabled={deleteMutation.isPending}
               >
                 <Trash2 className="h-4 w-4 mr-2" />

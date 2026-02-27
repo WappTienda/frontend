@@ -1,6 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router';
 import { ShoppingCart } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
+import { ToastContainer } from '@/components/ui';
 
 export function PublicLayout() {
   const itemCount = useCartStore((state) => state.getItemCount());
@@ -28,6 +29,7 @@ export function PublicLayout() {
       <main className="container mx-auto px-4 py-6">
         <Outlet />
       </main>
+      <ToastContainer />
     </div>
   );
 }
