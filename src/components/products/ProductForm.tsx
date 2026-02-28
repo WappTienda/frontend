@@ -115,6 +115,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
       salePrice: data.salePrice || undefined,
     };
     if (isEditing) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { sku: _, ...updateData } = payload;
       updateMutation.mutate(updateData);
     } else {
