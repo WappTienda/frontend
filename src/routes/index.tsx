@@ -14,6 +14,7 @@ import {
   OrdersPage,
   OrderDetailPage,
   SettingsPage,
+  CategoriesPage,
 } from '@/pages/admin';
 
 // Root route
@@ -98,6 +99,12 @@ const adminSettingsRoute = createRoute({
   component: SettingsPage,
 });
 
+const adminCategoriesRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: '/admin/categories',
+  component: CategoriesPage,
+});
+
 // Catch-all 404 route
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -115,6 +122,7 @@ const routeTree = rootRoute.addChildren([
     adminOrdersRoute,
     adminOrderDetailRoute,
     adminSettingsRoute,
+    adminCategoriesRoute,
   ]),
   notFoundRoute,
 ]);
