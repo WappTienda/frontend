@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getApiErrorMessage } from '@/lib/apiErrors';
 
 const api = axios.create({
   baseURL: '/api/v1',
@@ -25,6 +26,7 @@ api.interceptors.response.use(
         window.location.href = '/admin/login';
       }
     }
+    error.message = getApiErrorMessage(error);
     return Promise.reject(error);
   }
 );
