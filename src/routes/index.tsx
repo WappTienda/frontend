@@ -6,7 +6,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 import { PublicLayout, AdminLayout } from '@/components/layouts';
-import { HomePage, CheckoutPage, OrderPage, NotFoundPage } from '@/pages/public';
+import { HomePage, CheckoutPage, OrderPage, NotFoundPage, ProductDetailPage } from '@/pages/public';
 import {
   LoginPage,
   DashboardPage,
@@ -45,6 +45,12 @@ const orderRoute = createRoute({
   getParentRoute: () => publicLayoutRoute,
   path: '/order/$publicId',
   component: OrderPage,
+});
+
+const productRoute = createRoute({
+  getParentRoute: () => publicLayoutRoute,
+  path: '/product/$productId',
+  component: ProductDetailPage,
 });
 
 // Admin login route (no layout)
@@ -107,7 +113,7 @@ const notFoundRoute = createRoute({
 
 // Route tree
 const routeTree = rootRoute.addChildren([
-  publicLayoutRoute.addChildren([homeRoute, checkoutRoute, orderRoute]),
+  publicLayoutRoute.addChildren([homeRoute, checkoutRoute, orderRoute, productRoute]),
   adminLoginRoute,
   adminLayoutRoute.addChildren([
     adminDashboardRoute,
@@ -121,7 +127,7 @@ const routeTree = rootRoute.addChildren([
 
 // Create router
 export const router = createRouter({ routeTree });
-export { orderRoute, adminOrderDetailRoute };
+export { orderRoute, adminOrderDetailRoute, productRoute };
 
 // Register router for type safety
 declare module '@tanstack/react-router' {
