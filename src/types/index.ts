@@ -239,6 +239,22 @@ export interface Setting {
   updatedAt: string;
 }
 
+export interface CreateCategoryDto {
+  name: string;
+  slug?: string;
+  description?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateCategoryDto {
+  name?: string;
+  slug?: string;
+  description?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
 export interface UpdateSettingDto {
   key: string;
   value?: string;

@@ -4,3 +4,4 @@ export { ProductsPage } from './ProductsPage';
 export { OrdersPage } from './OrdersPage';
 export { OrderDetailPage } from './OrderDetailPage';
 export { SettingsPage } from './SettingsPage';
+export { CategoriesPage } from './CategoriesPage';
