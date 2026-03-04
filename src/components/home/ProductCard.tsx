@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { Plus, Minus } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
 import { Button, Card } from '@/components/ui';
@@ -13,20 +14,26 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Card className="overflow-hidden">
       {product.imageUrl ? (
-        <div className="aspect-square bg-gray-100">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <Link to="/product/$productId" params={{ productId: product.id }}>
+          <div className="aspect-square bg-gray-100">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </Link>
       ) : (
-        <div className="aspect-square bg-gray-100 flex items-center justify-center">
-          <span className="text-gray-400 text-4xl">📦</span>
-        </div>
+        <Link to="/product/$productId" params={{ productId: product.id }}>
+          <div className="aspect-square bg-gray-100 flex items-center justify-center">
+            <span className="text-gray-400 text-4xl">📦</span>
+          </div>
+        </Link>
       )}
       <div className="p-4">
-        <h3 className="font-medium text-sm line-clamp-2 mb-1">{product.name}</h3>
+        <Link to="/product/$productId" params={{ productId: product.id }} className="hover:underline">
+          <h3 className="font-medium text-sm line-clamp-2 mb-1">{product.name}</h3>
+        </Link>
         <div className="flex flex-col items-start mb-3">
           <span className="font-bold text-primary">{formatCurrency(effectivePrice)}</span>
           {product.salePrice && (
